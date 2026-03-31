@@ -86,4 +86,8 @@ This is the place for you to write reflections:
 
 #### Reflection Subscriber-1
 
+Penggunaan RwLock<> (Read-Write Lock) sangat diperlukan untuk memastikan keamanan memori saat banyak proses mencoba mengakses Vec notifikasi. RwLock dipilih daripada Mutex karena RwLock mengizinkan banyak thread untuk membaca data secara bersamaan, selama tidak ada thread yang sedang menulis. Hal ini lebih efisien untuk kasus sistem notifikasi, di mana operasi membaca (melihat daftar notifikasi) biasanya jauh lebih sering terjadi daripada operasi menulis (menambahkan notifikasi baru).
+
+Berbeda dengan Java, Rust sangat ketat dalam menjamin keamanan dari data race. Rust menganggap modifikasi langsung pada variabel global static sebagai operasi yang tidak aman (unsafe) karena tidak ada thread-safety bawaan. Selain itu, variabel static standar di Rust mengharuskan nilainya dievaluasi saat dicompile, padahal struktur data kompleks seperti Vec atau DashMap membutuhkan alokasi memori dinamis saat aplikasi berjalan (runtime). Oleh karena itu, library lazy_static digunakan untuk menunda inisialisasi variabel tersebut hingga pertama kali diakses saat runtime, sekaligus membungkusnya dengan RwLock agar valid dan aman oleh kompilator.
+
 #### Reflection Subscriber-2
